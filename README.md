@@ -65,9 +65,9 @@
   - mongod updated 21000000 bytes in total.
 
 
-     === update_test<double>* : 400 : 1000000 : 1 ===
-     TIME: 9.6226 CPU: 88.5416
-      ALL>    103922 n/s, TOTAL:    21000000 B,2.08126e-06 MB/s,
+    === update_test<double>* : 400 : 1000000 : 1 ===
+    TIME: 9.6226 CPU: 88.5416
+     ALL>    103922 n/s, TOTAL:    21000000 B,2.08126e-06 MB/s,
 
 ####[update]
 
@@ -75,9 +75,10 @@
 
   Updated number column from double (64bit) to long long (64bit).
 
-     === update_test<long long>* : 400 : 1000000 : 1 ===
-     TIME: 34.6098 CPU: 96.1578
-      ALL>   28893.6 n/s, TOTAL:   21000000 B,  0.578656 MB/s,
+
+    === update_test<long long>* : 400 : 1000000 : 1 ===
+    TIME: 34.6098 CPU: 96.1578
+     ALL>   28893.6 n/s, TOTAL:   21000000 B,  0.578656 MB/s,
 
 
 ####[fetch by $in]
@@ -90,14 +91,14 @@
   - Client received 15560000 bytes of BSON objects in total.
 
 
-     === query_in_test* : 400 : 1000000 : 1 ===
-     TIME: 0.366799 CPU: 27.2629
-      ALL>   40000,     109052 n/s, TOTAL:   15560000 B, 0.0144914 GB,   40.4559 MB/s,
+    === query_in_test* : 400 : 1000000 : 1 ===
+    TIME: 0.366799 CPU: 27.2629
+     ALL>   40000,     109052 n/s, TOTAL:   15560000 B, 0.0144914 GB,   40.4559 MB/s,
 
  Below outputs means,
   Fetched 40000 documents from collection was housing 1000000 documents from 100 thread.
 
-     === query_in_test* : 400 : 1000000 : 100 ===
+    === query_in_test* : 400 : 1000000 : 100 ===
 
 ####[fetch by direct value]
 
@@ -105,7 +106,7 @@
 
    It means RANDOM fetch.
 
-     === query_test* : 400 : 1000000 : 1 ===
+    === query_test* : 400 : 1000000 : 1 ===
 
 ####[fetch by range]
 
@@ -115,9 +116,9 @@
 
    It means SEQUENCIAL fetch.
 
-     === query_range_test* : 400 : 1000000 : 1 ===
-     TIME: 0.092688 CPU: 86.3111
-      ALL>   40000,     431555 n/s, TOTAL:   15560000 B, 0.0144914 GB,   160.098 MB/s,
+    === query_range_test* : 400 : 1000000 : 1 ===
+    TIME: 0.092688 CPU: 86.3111
+     ALL>   40000,     431555 n/s, TOTAL:   15560000 B, 0.0144914 GB,   160.098 MB/s,
 
 
 #How to setup mongodb
