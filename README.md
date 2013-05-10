@@ -51,6 +51,7 @@
   - Actually,mongod saved 408000000 bytes data.
   - Throuput was 7.67081 MB per seconds.
 
+[output]
  
     === insert_test* : 400 : 1000000 : 10 ===
     TIME: 47.8652 CPU: 124.872
@@ -64,6 +65,7 @@
 
   - mongod updated 21000000 bytes in total.
 
+[output]
 
     === update_test<double>* : 400 : 1000000 : 1 ===
     TIME: 9.6226 CPU: 88.5416
@@ -75,6 +77,7 @@
 
   Updated number column from double (64bit) to long long (64bit).
 
+[output]
 
     === update_test<long long>* : 400 : 1000000 : 1 ===
     TIME: 34.6098 CPU: 96.1578
@@ -90,6 +93,7 @@
 
   - Client received 15560000 bytes of BSON objects in total.
 
+[output]
 
     === query_in_test* : 400 : 1000000 : 1 ===
     TIME: 0.366799 CPU: 27.2629
@@ -106,6 +110,8 @@
 
    It means RANDOM fetch.
 
+[output]
+
     === query_test* : 400 : 1000000 : 1 ===
 
 ####[fetch by range]
@@ -115,6 +121,8 @@
   Fetched 40000 documents by using $gte and $lt operators from collection was housing 1000000 documents from 1 thread.
 
    It means SEQUENCIAL fetch.
+
+[output]
 
     === query_range_test* : 400 : 1000000 : 1 ===
     TIME: 0.092688 CPU: 86.3111
