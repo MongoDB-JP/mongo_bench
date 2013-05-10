@@ -49,7 +49,8 @@
   - mongod could store 20892 documents per seconds.
   - Client sends 385000000 bytes data.
   - Actually,mongod saved 408000000 bytes data.
-  - Throuput was 7.67081 MB per seconds
+  - Throuput was 7.67081 MB per seconds.
+
  
     === insert_test* : 400 : 1000000 : 10 ===
     TIME: 47.8652 CPU: 124.872
@@ -62,6 +63,7 @@
   Updated number column from double to double.
 
   - mongod updated 21000000 bytes in total.
+
 
      === update_test<double>* : 400 : 1000000 : 1 ===
      TIME: 9.6226 CPU: 88.5416
@@ -87,6 +89,7 @@
 
   - Client received 15560000 bytes of BSON objects in total.
 
+
      === query_in_test* : 400 : 1000000 : 1 ===
      TIME: 0.366799 CPU: 27.2629
       ALL>   40000,     109052 n/s, TOTAL:   15560000 B, 0.0144914 GB,   40.4559 MB/s,
@@ -102,7 +105,7 @@
 
    It means RANDOM fetch.
 
-   === query_test* : 400 : 1000000 : 1 ===
+     === query_test* : 400 : 1000000 : 1 ===
 
 ####[fetch by range]
 
