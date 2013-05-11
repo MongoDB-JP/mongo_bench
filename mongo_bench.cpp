@@ -298,8 +298,8 @@ struct insert_test :  thread_test {
   virtual void finish(pidst diff) {
     BSONObj stat;
     conn.runCommand("test",BSON("collStats" << "TEST"),stat);
-    long long colsize = (long long)stat["size"].Number();
-
+    // long long colsize = (long long)stat["size"].Number();
+    long long colsize = 0L;
     long long totalsize = 0L;
     for ( vector<base_args *>::iterator it(args.begin()),itend(args.end());
             it != itend;
