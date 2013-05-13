@@ -290,7 +290,7 @@ struct insert_test :  thread_test {
       arg->conn.insert( ns ,obj);
       arg->totalsize += obj.objsize();
     }
-    string errmsg = arg->conn.getLastError();
+    string errmsg = arg->conn.getLastError(true);
     if ( ! errmsg.empty() ) {
       throw runtime_error(errmsg);
     }
@@ -333,7 +333,7 @@ struct ensure_test :  thread_test {
   }
   virtual void test( base_args * arg ) {
     conn.ensureIndex( ns , BSON( fieldname.c_str() << 1 ));
-    string errmsg = conn.getLastError();
+    string errmsg = conn.getLastError(true);
     if ( ! errmsg.empty() ) {
       throw runtime_error(errmsg);
     }
@@ -366,7 +366,7 @@ struct update_test :  thread_test {
     BSONObj obj = BSON(fieldname << value);
     totalsize += obj.objsize() * ndocs;
     conn.update( ns , BSONObj() ,BSON( "$set" << obj ),false,true);
-    string errmsg = conn.getLastError();
+    string errmsg = conn.getLastError(true);
     if ( ! errmsg.empty() ) {
       throw runtime_error(errmsg);
     }
@@ -464,10 +464,11 @@ struct query_in_args : query_base_args {
 
 
 struct query_in_test :  query_base_test {
-  query_in_test( string fieldname , 
+  int offset;
+  query_in_test( string fieldname , int offset,
     const char *connect_to,const char *ns,int  pid,int  docsize,int  ndocs,int  nthreads 
     )
-    : query_base_test(fieldname,connect_to,ns,pid,docsize,ndocs,nthreads) {
+    : offset(offset),query_base_test(fieldname,connect_to,ns,pid,docsize,ndocs,nthreads) {
     int status;
     cout << "=== " << abi::__cxa_demangle(typeid(this).name(), 0, 0, &status) << " : " << docsize << " : " << ndocs << " : " << nthreads << " ===" << endl;
   }
@@ -476,7 +477,7 @@ struct query_in_test :  query_base_test {
   virtual base_args * getarg(int n){
     query_in_args * a = new query_in_args();
     for ( int i = 0 ; i < (THREAD_MAX / nthreads); i++ ) {
-      a->values.push_back(n * (THREAD_MAX / nthreads) + i);
+      a->values.push_back(offset + n * (THREAD_MAX / nthreads) + i);
     }
     return a;
   }
@@ -492,17 +493,18 @@ struct query_range_args : query_base_args {
   query_range_args(int from,int to) : from(from),to(to){}
 };
 struct query_range_test :  query_base_test {
-  query_range_test( string fieldname , 
+  int offset;
+  query_range_test( string fieldname , int offset,
     const char *connect_to,const char *ns,int  pid,int  docsize,int  ndocs,int  nthreads 
     )
-    : query_base_test(fieldname,connect_to,ns,pid,docsize,ndocs,nthreads) {
+    : offset(offset),query_base_test(fieldname,connect_to,ns,pid,docsize,ndocs,nthreads) {
     int status;
     cout << "=== " << abi::__cxa_demangle(typeid(this).name(), 0, 0, &status) << " : " << docsize << " : " << ndocs << " : " << nthreads << " ===" << endl;
   }
   virtual base_args * getarg(int n){
     return new query_range_args(
-      (ndocs/nthreads)*n,
-      (ndocs/nthreads)*n + (ndocs / DIV_BASE) * (THREAD_MAX/nthreads)
+      (ndocs/nthreads)*n + (ndocs / DIV_BASE) * (THREAD_MAX/nthreads) * offset,
+      (ndocs/nthreads)*n + (ndocs / DIV_BASE) * (THREAD_MAX/nthreads) * (offset + 1)
       );
   }
   virtual BSONObj gen_query(query_base_args * a) {
@@ -604,10 +606,10 @@ int main ( int argc , char * argv[]  ){
   }
 
   
-  {
-    insert_test i(CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
-    i.start();
-  }
+  // {
+  //   insert_test i(CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
+  //   i.start();
+  // }
   // {
   //   conn_test c(CONNECT_TO,NS,PID,DOCSIZE,NDOCS,THREAD_MAX);
   //   c.start();
@@ -649,15 +651,23 @@ int main ( int argc , char * argv[]  ){
     u.start();
   }
   {
-    query_in_test q("value1",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
+    query_in_test q("value1",0,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
     q.start();
   }
   {
-    query_in_test q("value1",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
+    query_in_test q("value1",200,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
     q.start();
   }
   {
-    query_in_test q("value1",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,THREAD_MAX);
+    query_in_test q("value1",400,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
+    q.start();
+  }
+  {
+    query_in_test q("value1",600,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
+    q.start();
+  }
+  {
+    query_in_test q("value1",800,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,THREAD_MAX);
     q.start();
   }
   {
@@ -669,15 +679,15 @@ int main ( int argc , char * argv[]  ){
     q.start();
   }
   {
-    query_range_test r("_id",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
+    query_range_test r("_id",1,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,1);
     r.start();
   }
   {
-    query_range_test r("_id",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
+    query_range_test r("_id",2,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,NTHREADS);
     r.start();
   }
   {
-    query_range_test r("_id",CONNECT_TO,NS,PID,DOCSIZE,NDOCS,THREAD_MAX);
+    query_range_test r("_id",3,CONNECT_TO,NS,PID,DOCSIZE,NDOCS,THREAD_MAX);
     r.start();
   }
 }
